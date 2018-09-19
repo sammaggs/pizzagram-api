@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+
+$router->group(["prefix" => "options"], function ($router) {
+    $router->get("", "Ingredients@index");
+    $router->post("", "Ingredients@store");
+    $router->get("{ingredient}", "Ingredients@show");
+    $router->delete("{ingredient}", "Ingredients@destroy");
+
 });
