@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Ingredient;
+use App\Http\Requests\IngredientRequest;
+use App\Http\Resources\IngredientResource;
+use App\Http\Resources\IngredientListResource;
 
 
 class Ingredients extends Controller
@@ -15,7 +18,7 @@ class Ingredients extends Controller
      */
     public function index()
     {
-        return Ingredient::all();
+        return IngredientListResource::collection(Ingredient::all());
     }
 
     /**
@@ -24,7 +27,7 @@ class Ingredients extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(IngredientRequest $request)
 {
     // get post request data for title and article
     $data = $request->only([
@@ -51,7 +54,7 @@ class Ingredients extends Controller
     $ingredient = Ingredient::create($data);
 
     // return the article along with a 201 status code
-    return response($ingredient, 201);
+    return new IngredientResource($ingredient);
 }
 
     /**
@@ -60,9 +63,9 @@ class Ingredients extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Ingredient $ingredient)
     {
-        return Ingredient::find($id);
+        return new IngredientResource($ingredient);
     }
 
     /**
@@ -83,12 +86,9 @@ class Ingredients extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Ingredient $ingredient)
 {
-    $ingredient = Ingredient::find($id);
     $ingredient->delete();
-
-    // use a 204 code as there is no content in the response
     return response(null, 204);
 }
 }
